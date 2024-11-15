@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PatinsTableModel extends AbstractTableModel {
     private List<Patins> patinsList;
-    private final String[] columnNames = {"ID", "Número", "Disponível"}; // Adicionando ID na lista de colunas
+    private final String[] columnNames = {"ID", "Número", "Modelo"};
 
     public PatinsTableModel(List<Patins> patinsList) {
         this.patinsList = patinsList;
@@ -33,7 +33,7 @@ public class PatinsTableModel extends AbstractTableModel {
         return switch (columnIndex) {
             case 0 -> patins.getId();
             case 1 -> patins.getNumero();
-            case 2 -> patins.isDisponivel() ? "Sim" : "Não";
+            case 2 -> patins.getModelo(); // Retornando o modelo do patins
             default -> null;
         };
     }

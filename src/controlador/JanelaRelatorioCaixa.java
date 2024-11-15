@@ -1,5 +1,4 @@
 package controlador;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
@@ -7,60 +6,63 @@ import java.util.Map;
 public class JanelaRelatorioCaixa extends JDialog {
     private Map<String, Double> relatorio;
     private double totalMultas = 0.0;
+    private double totalSemMultas = 0.0;
 
-    public JanelaRelatorioCaixa(Map<String, Double> relatorio) {
-        this.relatorio = relatorio;
+    public JanelaRelatorioCaixa(Map<String, Double> relatorioCaixa) {
+        this.relatorio = relatorioCaixa;
+
         setTitle("Relatório de Caixa");
-        setSize(300, 300);
+        setSize(400, 400);
         setLocationRelativeTo(null);
-        setModal(true);
-        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setLayout(new GridLayout(1, 2));
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));  // Espaçamento no painel
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        double totalComMultas = 0.0;
 
-        headerPanel.add(new JLabel("Forma de Pagamento", SwingConstants.CENTER));
-        headerPanel.add(new JLabel("Total Recebido", SwingConstants.CENTER));
+        // Preenchendo o modelo da lista com os valores de pagamento
+        for (Map.Entry<String, Double> entry : relatorio.entrySet()) {
+            String formaPagamento = entry.getKey();
+            Double valor = entry.getValue();
 
-        add(headerPanel, BorderLayout.NORTH);
-
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayout(relatorio.size(), 2)); 
-
-        if (relatorio.isEmpty()) {
-            contentPanel.add(new JLabel("Nenhum pagamento registrado.", SwingConstants.CENTER));
-            contentPanel.add(new JLabel(""));
-        } else {
-            for (Map.Entry<String, Double> entry : relatorio.entrySet()) {
-                contentPanel.add(new JLabel(entry.getKey(), SwingConstants.CENTER));  
-                contentPanel.add(new JLabel(String.format("R$ %.2f", entry.getValue()), SwingConstants.CENTER));
-
-                if (entry.getKey().contains("Multa")) {
-                    totalMultas += entry.getValue();
-                }
+            if ("Multas".equals(formaPagamento)) {
+                totalMultas += valor;
+            } else {
+                listModel.addElement(formaPagamento + ": R$ " + valor);
+                totalSemMultas += valor;
             }
+            totalComMultas += valor;
         }
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel); 
-        add(scrollPane, BorderLayout.CENTER);
+        // Criando a lista de pagamentos e centralizando
+        JList<String> list = new JList<>(listModel);
+        list.setBorder(BorderFactory.createTitledBorder("Pagamentos Recebidos"));
+        list.setCellRenderer(new CentralizedListCellRenderer());
+        add(new JScrollPane(list), BorderLayout.CENTER);
 
-        JPanel multasPanel = new JPanel();
-        multasPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JPanel panelTotais = new JPanel(new GridLayout(3, 1));
 
-        JLabel labelMultas = new JLabel("Total de Multas: ");
-        JLabel valorMultas = new JLabel(String.format("R$ %.2f", totalMultas));
-        multasPanel.add(labelMultas);
-        multasPanel.add(valorMultas);
+        JLabel lblTotalMultas = new JLabel("Total de Multas: R$ " + totalMultas);
+        lblTotalMultas.setHorizontalAlignment(SwingConstants.CENTER);
+        panelTotais.add(lblTotalMultas);
 
-        add(multasPanel, BorderLayout.SOUTH);  
+        JLabel lblTotalSemMultas = new JLabel("Total (Sem Multas): R$ " + totalSemMultas);
+        lblTotalSemMultas.setHorizontalAlignment(SwingConstants.CENTER);
+        panelTotais.add(lblTotalSemMultas);
 
-        JPanel buttonPanel = new JPanel();
-        JButton btnFechar = new JButton("Fechar");
-        btnFechar.addActionListener(e -> dispose());
-        buttonPanel.add(btnFechar);
+        JLabel lblTotalComMultas = new JLabel("Total (Com Multas): R$ " + totalComMultas);
+        lblTotalComMultas.setHorizontalAlignment(SwingConstants.CENTER);
+        panelTotais.add(lblTotalComMultas);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(panelTotais, BorderLayout.SOUTH);
+    }
+
+    private static class CentralizedListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            return label;
+        }
     }
 }

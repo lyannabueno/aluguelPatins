@@ -19,7 +19,7 @@ public class JanelaAluguel extends JFrame {
     public JanelaAluguel(Controlador controlador) {
         this.controlador = controlador;
         setTitle("Aluguel de Patins");
-        setSize(300, 325);
+        setSize(350, 340);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -69,37 +69,56 @@ public class JanelaAluguel extends JFrame {
         gbc.gridx = 1;
         panel.add(txtTelefone, gbc);
 
+
+        String[] formasPagamento = {"Pix", "Boleto", "Dinheiro", "Cartão de Débito", "Cartão de Crédito"};
+        JComboBox<String> comboPagamento = new JComboBox<>(formasPagamento);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(new JLabel("Forma de Pagamento:"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(comboPagamento, gbc);
         
+        // Adicionando um espaço em branco entre os campos e o botão
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(Box.createRigidArea(new Dimension(0, 10)), gbc);
-
         
         JButton btnAlugar = new JButton("Alugar");
 
         btnAlugar.addActionListener((ActionEvent e) -> {
-            String id = txtId.getText();
+            String id = txtId.getText().trim();
             String cpf = txtCpf.getText().replaceAll("[^0-9]", ""); // Remove caracteres não numéricos
             String telefone = txtTelefone.getText().replaceAll("[^0-9]", "");
-            
-            if (controlador.alugarPatins(id)) {
-                JOptionPane.showMessageDialog(null, "Patins alugados com sucesso!");
-                
+            String formaPagamento = (String) comboPagamento.getSelectedItem();
+
+            if (id.isEmpty() || cpf.isEmpty() || telefone.isEmpty() || formaPagamento == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos antes de alugar.", "Campos Obrigatórios", JOptionPane.WARNING_MESSAGE);
+                return; 
+            }
+
+            if (controlador.alugarPatins(id, formaPagamento)) {
+                JOptionPane.showMessageDialog(null, "Patins alugado com sucesso!");
+
                 txtId.setText("");
                 txtCpf.setText("");
                 txtTelefone.setText("");
-    
+                comboPagamento.setSelectedIndex(0);
+
                 tableModel.setPatinsList(controlador.getPatinsDisponiveis());
             } else {
-                JOptionPane.showMessageDialog(null, "Patins não disponíveis ou número inválido.");
-                
+                JOptionPane.showMessageDialog(null, "Patins não disponível ou número inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+
+                // Limpar os campos após erro
                 txtId.setText("");
                 txtCpf.setText("");
                 txtTelefone.setText("");
             }
         });
+
 
 
         JButton btnDevolver = new JButton("Devolver");
