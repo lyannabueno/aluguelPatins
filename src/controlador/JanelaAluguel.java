@@ -19,12 +19,11 @@ public class JanelaAluguel extends JFrame {
     public JanelaAluguel(Controlador controlador) {
         this.controlador = controlador;
         setTitle("Aluguel de Patins");
-        setSize(300, 300);
+        setSize(300, 325);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Criar a tabela de patins
         tableModel = new PatinsTableModel(controlador.getPatinsDisponiveis());
         table = new JTable(tableModel);
         
@@ -95,9 +94,26 @@ public class JanelaAluguel extends JFrame {
                 tableModel.setPatinsList(controlador.getPatinsDisponiveis());
             } else {
                 JOptionPane.showMessageDialog(null, "Patins não disponíveis ou número inválido.");
+                
+                txtId.setText("");
+                txtCpf.setText("");
+                txtTelefone.setText("");
             }
         });
 
+
+        JButton btnDevolver = new JButton("Devolver");
+        btnDevolver.addActionListener(e -> {
+            JanelaDevolucao janelaDevolucao = new JanelaDevolucao(controlador, this);
+            janelaDevolucao.setVisible(true);
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER; 
+        panel.add(btnDevolver, gbc);
+        
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;

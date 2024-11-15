@@ -15,14 +15,11 @@ public class JanelaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centraliza a janela
 
-        // Layout
-        setLayout(new GridLayout(3, 1));
+        setLayout(new GridLayout(2, 1));
 
         JButton btnAlugar = new JButton("Alugar Patins");
-        JButton btnDevolucao = new JButton("Devolver Patins");
         JButton btnRelatorio = new JButton("Relatório de Caixa");
 
-        // Ação para o botão de aluguel
         btnAlugar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -31,15 +28,6 @@ public class JanelaPrincipal extends JFrame {
             }
         });
 
-        btnDevolucao.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JanelaDevolucao janelaDevolucao = new JanelaDevolucao(controlador);
-                janelaDevolucao.setVisible(true);
-            }
-        });
-
-        // Ação para o botão de relatório
         btnRelatorio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,9 +36,7 @@ public class JanelaPrincipal extends JFrame {
             }
         });
 
-        // Adicionando botões à janela
         add(btnAlugar);
-        add(btnDevolucao);
         add(btnRelatorio);
     }
 }

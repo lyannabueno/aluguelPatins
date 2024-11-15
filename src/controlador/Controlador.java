@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class Controlador {
     private final List<Patins> patinsList;
@@ -34,16 +35,18 @@ public class Controlador {
     }
 
     public void devolverPatins(String id, boolean houveDanos) {
-        for (Patins patins : patinsList) {
-            if (patins.getId().equals(id)) {
-                patins.setDisponivel(true);
-                if (houveDanos) {
-                    registrarPagamento("Multa por Danos", multaDanos);
-                }
-                break;
+    for (Patins patins : patinsList) {
+        if (patins.getId().equals(id)) {
+            if (houveDanos) {
+                JOptionPane.showMessageDialog(null, "Patins devolvido com danos. Não estará disponível para aluguel.");
+            } else {
+                patins.setDisponivel(true); 
+                JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso e disponível para aluguel.");
             }
+            break;
         }
     }
+}
 
     public void registrarPagamento(String formaPagamento, double valor) {
         relatorioCaixa.put(formaPagamento, relatorioCaixa.getOrDefault(formaPagamento, 0.0) + valor);
@@ -61,5 +64,14 @@ public class Controlador {
             }
         }
         return disponiveis;
+    }
+
+    public boolean isPatinsAlugado(String id) {
+        for (Patins patins : patinsList) {
+            if (patins.getId().equals(id) && !patins.isDisponivel()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

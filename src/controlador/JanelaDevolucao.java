@@ -13,7 +13,7 @@ public class JanelaDevolucao extends JFrame {
     private final JButton btnDevolver;
     private JCheckBox chkDanos;
 
-    public JanelaDevolucao(Controlador controlador) {
+    public JanelaDevolucao(Controlador controlador, JanelaAluguel janelaAluguel) {
         this.controlador = controlador;
         setTitle("Devolução de Patins");
         setSize(300, 300); 
@@ -52,10 +52,8 @@ public class JanelaDevolucao extends JFrame {
 
         chkDanos.addItemListener(e -> {
             if (chkDanos.isSelected()) {
-                // Habilita o campo de texto para danos
                 txtDanos.setEnabled(true);
             } else {
-                // Desabilita o campo de texto para danos
                 txtDanos.setEnabled(false);
             }
         });
@@ -72,18 +70,24 @@ public class JanelaDevolucao extends JFrame {
                     return;
                 }
 
+                if (!controlador.isPatinsAlugado(numero)) {
+                    JOptionPane.showMessageDialog(null, "Este patins não foi alugado ou não existe.");
+                    return;
+                }
+                
                 if (chkDanos.isSelected() && !danos.isEmpty()) {
-                    double valorAcrescentado = 50.0; 
-                    JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Danos: " + danos + ". Valor acrescido: R$ " + valorAcrescentado);
+                    controlador.devolverPatins(numero, true); 
+                    JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Danos: " + danos + ". O patins não estará disponível para aluguel.");
                 } else if (chkDanos.isSelected()) {
                     JOptionPane.showMessageDialog(null, "Por favor, descreva os danos.");
                     return;
                 } else {
+                    controlador.devolverPatins(numero, false);
                     JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Nenhum dano registrado.");
                 }
-
-                controlador.devolverPatins(numero, chkDanos.isSelected());  // Passando o valor de 'houveDanos' para o controlador
-                dispose();  // Fecha a janela após a devolução
+                
+                janelaAluguel.atualizarTabela();
+                dispose();
             }
         });
 
