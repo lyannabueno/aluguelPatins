@@ -1,11 +1,12 @@
-package aluguelpains;
+package controlador;
 
+import entidade.Patins;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class PatinsTableModel extends AbstractTableModel {
     private List<Patins> patinsList;
-    private final String[] columnNames = {"Número", "Disponível"};
+    private final String[] columnNames = {"ID", "Número", "Disponível"}; // Adicionando ID na lista de colunas
 
     public PatinsTableModel(List<Patins> patinsList) {
         this.patinsList = patinsList;
@@ -30,8 +31,9 @@ public class PatinsTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Patins patins = patinsList.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> patins.getNumero();
-            case 1 -> patins.isDisponivel() ? "Sim" : "Não";
+            case 0 -> patins.getId();
+            case 1 -> patins.getNumero();
+            case 2 -> patins.isDisponivel() ? "Sim" : "Não";
             default -> null;
         };
     }

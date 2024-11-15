@@ -1,11 +1,17 @@
 package aluguelpains;
 
+import controlador.Controlador;
+import javax.swing.SwingUtilities;
+import controlador.JanelaPrincipal;
+
 public class AluguelPains {
 
     public static void main(String[] args) {
-        Controlador controlador = new Controlador();
-        JanelaAluguel janela = new JanelaAluguel(controlador);
-        janela.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            Controlador controlador = new Controlador();
+            JanelaPrincipal janelaPrincipal = new JanelaPrincipal(controlador);
+            janelaPrincipal.setVisible(true);
+        });
     }
     
 }

@@ -1,5 +1,6 @@
-package aluguelpains;
+package controlador;
 
+import entidade.Patins;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,34 +9,37 @@ import java.util.Map;
 public class Controlador {
     private final List<Patins> patinsList;
     private final Map<String, Double> relatorioCaixa;
-    private final double precoAluguel = 20.0; // Preço fixo para o aluguel
+    private final double precoAluguel = 20.0;
+    final double multaDanos = 50.0;
 
     public Controlador() {
         patinsList = new ArrayList<>();
         relatorioCaixa = new HashMap<>();
-        patinsList.add(new Patins("36"));
-        patinsList.add(new Patins("37"));
-        patinsList.add(new Patins("38"));
-        patinsList.add(new Patins("39"));
-        patinsList.add(new Patins("40"));
+        patinsList.add(new Patins("1", "36"));
+        patinsList.add(new Patins("2", "37"));
+        patinsList.add(new Patins("3", "38"));
+        patinsList.add(new Patins("4", "39"));
+        patinsList.add(new Patins("5", "40"));
     }
 
-    public boolean alugarPatins(String numero) {
+    public boolean alugarPatins(String id) {
         for (Patins patins : patinsList) {
-            if (patins.getNumero().equals(numero) && patins.isDisponivel()) {
+            if (patins.getId().equals(id) && patins.isDisponivel()) {
                 patins.setDisponivel(false);
-                // Aqui você pode registrar o pagamento
-                registrarPagamento("Dinheiro", precoAluguel); // Exemplo de pagamento em dinheiro
+                registrarPagamento("Dinheiro", precoAluguel);
                 return true;
             }
         }
         return false;
     }
 
-    public void devolverPatins(String numero) {
+    public void devolverPatins(String id, boolean houveDanos) {
         for (Patins patins : patinsList) {
-            if (patins.getNumero().equals(numero)) {
+            if (patins.getId().equals(id)) {
                 patins.setDisponivel(true);
+                if (houveDanos) {
+                    registrarPagamento("Multa por Danos", multaDanos);
+                }
                 break;
             }
         }
