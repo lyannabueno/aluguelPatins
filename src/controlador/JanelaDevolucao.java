@@ -59,35 +59,37 @@ public class JanelaDevolucao extends JFrame {
         });
 
         btnDevolver = new JButton("Devolver");
-        btnDevolver.addActionListener(e -> {
-            String numero = txtNumero.getText();
-            String danos = txtDanos.getText();
+        btnDevolver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String numero = txtNumero.getText();
+                String danos = txtDanos.getText();
 
-            if (numero.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor, informe o número do patins.");
-                return;
+                if (numero.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, informe o número do patins.");
+                    return;
+                }
+
+                if (!controlador.isPatinsAlugado(numero)) {
+                    JOptionPane.showMessageDialog(null, "Este patins não foi alugado ou não existe.");
+                    return;
+                }
+                
+                if (chkDanos.isSelected() && !danos.isEmpty()) {
+                    controlador.devolverPatins(numero, true); 
+                    JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Danos: " + danos + ". O patins não estará disponível para aluguel.");
+                } else if (chkDanos.isSelected()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, descreva os danos.");
+                    return;
+                } else {
+                    controlador.devolverPatins(numero, false);
+                    JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Nenhum dano registrado.");
+                }
+                
+                janelaAluguel.atualizarTabela();
+                dispose();
             }
-
-            if (!controlador.isPatinsAlugado(numero)) {
-                JOptionPane.showMessageDialog(null, "Este patins não foi alugado ou não existe.");
-                return;
-            }
-
-            if (chkDanos.isSelected() && !danos.isEmpty()) {
-                controlador.devolverPatins(numero, true);
-                JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Danos: " + danos + ". Multa aplicada.");
-            } else if (chkDanos.isSelected()) {
-                JOptionPane.showMessageDialog(null, "Por favor, descreva os danos.");
-                return;
-            } else {
-                controlador.devolverPatins(numero, false);
-                JOptionPane.showMessageDialog(null, "Patins devolvido com sucesso! Nenhum dano registrado.");
-            }
-
-            janelaAluguel.atualizarTabela();
-            dispose();
         });
-
 
         gbc.gridx = 0;
         gbc.gridy = 3;
